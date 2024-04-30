@@ -1,0 +1,1 @@
+/Users/caio.tonetti/Documents/Git/Personal/ast-generator-rs/target/debug/ast-generator-rs: /Users/caio.tonetti/Documents/Git/Personal/ast-generator-rs/src/ast_generator.rs /Users/caio.tonetti/Documents/Git/Personal/ast-generator-rs/src/main.rs

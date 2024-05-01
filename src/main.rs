@@ -17,10 +17,10 @@ fn main () {
     let args = Args::parse();
     let base_name = "Expr";
     let grammar = vec![
-        "Binary   : Expr lhs, Token op, Expr rhs",
-        "Grouping : Expr expr",
+        "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
+        "Grouping : Box<Expr> expr",
         "Literal  : Token token",
-        "Unary    : token op, Expr rhs",
+        "Unary    : token op, Box<Expr> rhs",
     ].iter().map(|v| v.to_string()).collect();
 
     let ast = match args.input_dir {

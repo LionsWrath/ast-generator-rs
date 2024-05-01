@@ -20,7 +20,7 @@ fn main () {
         "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
         "Grouping : Box<Expr> expr",
         "Literal  : Token token",
-        "Unary    : token op, Box<Expr> rhs",
+        "Unary    : Token op, Box<Expr> rhs",
     ].iter().map(|v| v.to_string()).collect();
 
     let ast = match args.input_dir {

@@ -70,11 +70,7 @@ impl GenerateAst {
             let s = t.split(':').collect::<Vec<_>>();
             let trimmed = s[0].trim();
             
-            if trimmed == "Literal" {
-                self.write_file(file, format!("    {}(Token),\n", trimmed.to_uppercase()).as_bytes());
-            } else {
-                self.write_file(file, format!("    {}({}),\n", trimmed.to_uppercase(), trimmed).as_bytes());
-            }
+            self.write_file(file, format!("    {}({}),\n", trimmed.to_uppercase(), trimmed).as_bytes());
         }
 
         self.write_file(file, "}\n\n".as_bytes());
@@ -88,6 +84,20 @@ impl GenerateAst {
             let right = s[1].split(',').collect::<Vec<_>>();
 
             if trimmed == "Literal" {
+                self.write_file(file, "#[derive(Clone, PartialEq, Debug)]\n".as_bytes());
+                self.write_file(file, "pub enum Literal {\n".as_bytes());
+
+                for r in &right {
+                    let tt = r.trim().split(' ').collect::<Vec<_>>();                   
+
+                    if tt[1] != "NIL" {
+                        self.write_file(file, format!("    {}({}),\n", tt[1].to_uppercase(), tt[0]).as_bytes());
+                    } else {
+                        self.write_file(file, "    NIL,\n".as_bytes());
+                    }
+                }
+
+                self.write_file(file, "}\n\n".as_bytes());
                 continue;
             }
 
@@ -144,11 +154,7 @@ impl GenerateAst {
             let lower = orig.to_lowercase();
             let name = lower.chars().nth(0).unwrap();
 
-            if orig == "Literal" {
-                self.write_file(file, format!("    fn visit_{}(&mut self, {}: &Token) -> T;\n", lower, name).as_bytes());
-            } else {
-                self.write_file(file, format!("    fn visit_{}(&mut self, {}: &{}) -> T;\n", lower, name, orig).as_bytes());
-            }
+            self.write_file(file, format!("    fn visit_{}(&mut self, {}: &{}) -> T;\n", lower, name, orig).as_bytes());
         }
 
         self.write_file(file, "}\n\n".as_bytes());

@@ -18,6 +18,7 @@ fn main () {
     let base_name = "Expr";
     let grammar = vec![
         "Comma    : Box<Expr> lhs, Box<Expr> rhs",
+        "Ternary  : Box<Expr> cond, Box<Expr> then_expr, Box<Expr> else_expr",
         "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
         "Grouping : Box<Expr> expr",
         "Literal  : BOOL bool, NUMBER f64, STRING String, NIL NIL",

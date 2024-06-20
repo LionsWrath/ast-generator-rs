@@ -15,12 +15,12 @@ struct Args {
 fn main () {
 
     let args = Args::parse();
-    let mut base_names = Vec<String> = Vec::new();
+    let mut base_names:  Vec<String> = Vec::new();
     let mut grammars: Vec<Vec<String>> = Vec::new();
 
     // Define AST Grammars
 
-    base_names.push("Expr");
+    base_names.push("Expr".to_string());
     grammars.push(
         vec![
             "Comma    : Box<Expr> lhs, Box<Expr> rhs",
@@ -32,30 +32,30 @@ fn main () {
         ].iter().map(|v| v.to_string()).collect()
     );
 
-    base_names.push("Stmt");
+    base_names.push("Stmt".to_string());
     grammars.push(
         vec![
             "Expression : Box<Expr> expr",
             "Print      : Box<Expr> expr",
         ].iter().map(|v| v.to_string()).collect()
-    )
+    );
 
     // Generate AST
 
     for i in 0..grammars.len() {
         let ast = match args.input_dir {
-            Some(dir) => {
+            Some(ref dir) => {
                 GenerateAst::new(
-                    dir,
+                    dir.clone(),
                     base_names[i].to_string(),
-                    grammars[i],
+                    grammars[i].clone(),
                 )
             },
             None => {
                 GenerateAst::new(
                     PathBuf::from("."),
                     base_names[i].to_string(),
-                    grammars[i],
+                    grammars[i].clone(),
                 )
             },
         };

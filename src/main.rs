@@ -15,55 +15,52 @@ struct Args {
 fn main () {
 
     let args = Args::parse();
-    let base_name = "Expr";
-    let grammar_expr = vec![
-        "Comma    : Box<Expr> lhs, Box<Expr> rhs",
-        "Ternary  : Box<Expr> cond, Box<Expr> then_expr, Box<Expr> else_expr",
-        "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
-        "Grouping : Box<Expr> expr",
-        "Literal  : BOOL bool, NUMBER f64, STRING String, NIL NIL",
-        "Unary    : Token op, Box<Expr> rhs",
-    ].iter().map(|v| v.to_string()).collect();
+    let mut base_names = Vec<String> = Vec::new();
+    let mut grammars: Vec<Vec<String>> = Vec::new();
 
-    let grammar_stmt = vec![
-        "Comma    : Box<Expr> lhs, Box<Expr> rhs",
-        "Ternary  : Box<Expr> cond, Box<Expr> then_expr, Box<Expr> else_expr",
-    ].iter().map(|v| v.to_string()).collect();
+    // Define AST Grammars
 
-    let ast_expr = match args.input_dir {
-        Some(dir) => {
-            GenerateAst::new(
-                dir,
-                base_name.to_string(),
-                grammar_expr,
-            )
-        },
-        None => {
-            GenerateAst::new(
-                PathBuf::from("."),
-                base_name.to_string(),
-                grammar_expr,
-            )
-        },
-    };
+    base_names.push("Expr");
+    grammars.push(
+        vec![
+            "Comma    : Box<Expr> lhs, Box<Expr> rhs",
+            "Ternary  : Box<Expr> cond, Box<Expr> then_expr, Box<Expr> else_expr",
+            "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
+            "Grouping : Box<Expr> expr",
+            "Literal  : BOOL bool, NUMBER f64, STRING String, NIL NIL",
+            "Unary    : Token op, Box<Expr> rhs",
+        ].iter().map(|v| v.to_string()).collect()
+    );
 
-    let ast_stmt = match args.input_dir {
-        Some(dir) => {
-            GenerateAst::new(
-                dir,
-                base_name.to_string(),
-                grammar_stmt,
-            )
-        },
-        None => {
-            GenerateAst::new(
-                PathBuf::from("."),
-                base_name.to_string(),
-                grammar_stmt,
-            )
-        },
-    };
+    base_names.push("Stmt");
+    grammars.push(
+        vec![
+            "Expression : Box<Expr> expr",
+            "Print      : Box<Expr> expr",
+        ].iter().map(|v| v.to_string()).collect()
+    )
 
-    ast_stmt.write_ast();
-    ast_expr.write_ast();
+    // Generate AST
+
+    for i in 0..grammars.len() {
+        let ast = match args.input_dir {
+            Some(dir) => {
+                GenerateAst::new(
+                    dir,
+                    base_names[i].to_string(),
+                    grammars[i],
+                )
+            },
+            None => {
+                GenerateAst::new(
+                    PathBuf::from("."),
+                    base_names[i].to_string(),
+                    grammars[i],
+                )
+            },
+        };
+
+        ast.write_ast();
+    }
+
 }

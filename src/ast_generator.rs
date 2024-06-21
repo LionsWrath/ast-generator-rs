@@ -17,7 +17,7 @@ impl GenerateAst {
         let mut visitor_dir = output_dir.clone();
         
         output_dir.push(filename);
-        visitor_dir.push("visit.rs");
+        visitor_dir.push(base_name.clone() + "Visit.rs");
 
         GenerateAst {
             output_dir,
@@ -31,8 +31,15 @@ impl GenerateAst {
 
         let mut file = GenerateAst::create_file(&self.output_dir);
         let mut visitor = GenerateAst::create_file(&self.visitor_dir);
+        let mut add_fmt = false;
 
-        self.add_header(&mut file);
+        for t in &self.types {
+            if t.contains("Literal") {
+                add_fmt = true;
+            }
+        }
+
+        self.add_header(&mut file, add_fmt);
         self.add_base(&mut file);
         self.add_subtypes(&mut file);
         self.add_visitor(&mut visitor);
@@ -58,8 +65,12 @@ impl GenerateAst {
         };
     }
 
-    fn add_header(&self, file: &mut File) {
+    fn add_header(&self, file: &mut File, add_fmt: bool) {
         self.write_file(file, "use crate::token::Token;\n\n".as_bytes());
+
+        if add_fmt {
+            self.write_file(file, "use std::fmt".as_bytes());
+        }
     }
 
     fn add_base(&self, file: &mut File) {
@@ -91,13 +102,14 @@ impl GenerateAst {
                     let tt = r.trim().split(' ').collect::<Vec<_>>();                   
 
                     if tt[1] != "NIL" {
-                        self.write_file(file, format!("    {}({}),\n", tt[1].to_uppercase(), tt[0]).as_bytes());
+                        self.write_file(file, format!("    {}({}),\n", tt[0].to_uppercase(), tt[1]).as_bytes());
                     } else {
                         self.write_file(file, "    NIL,\n".as_bytes());
                     }
                 }
 
                 self.write_file(file, "}\n\n".as_bytes());
+                self.add_display(file, "Literal".to_string(), &right);
                 continue;
             }
 
@@ -134,6 +146,24 @@ impl GenerateAst {
             self.write_file(file, "}\n\n".as_bytes());
 
         }
+    }
+
+    fn add_display(&self, file: &mut File, name: String, right_values: &Vec<&str>) {
+        self.write_file(file, format!("impl fmt::Display for {} {{\n", name).as_bytes());
+        self.write_file(file, "    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n".as_bytes());
+        self.write_file(file, "        match self {\n".as_bytes());
+
+        for &r in right_values {
+            let tt = r.trim().split(' ').collect::<Vec<_>>();                   
+
+            if tt[1] != "NIL" {
+                self.write_file(file, format!("            {}::{}(val) => write!(f, \"{{}}\", val),\n", name, tt[0].to_uppercase()).as_bytes());
+            } else {
+                self.write_file(file, format!("            {}::NIL => write!(f, \"NIL\"),\n", name).as_bytes());
+            }
+        }
+
+        self.write_file(file, "        }\n    }\n}\n\n".as_bytes());
     }
 
     fn add_visitor(&self, file: &mut File) {

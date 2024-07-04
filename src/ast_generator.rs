@@ -66,10 +66,12 @@ impl GenerateAst {
     }
 
     fn add_header(&self, file: &mut File, add_fmt: bool) {
-        self.write_file(file, "use crate::token::Token;\n\n".as_bytes());
+        self.write_file(file, "use crate::token::Token;\n".as_bytes());
 
         if add_fmt {
-            self.write_file(file, "use std::fmt".as_bytes());
+            self.write_file(file, "use std::fmt; \n\n".as_bytes());
+        } else {
+            self.write_file(file, "\n".as_bytes());
         }
     }
 

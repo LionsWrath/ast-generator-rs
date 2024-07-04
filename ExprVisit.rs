@@ -9,5 +9,6 @@ pub trait ExprVisitor<T> {
     fn visit_grouping(&mut self, g: &Grouping) -> T;
     fn visit_literal(&mut self, l: &Literal) -> T;
     fn visit_unary(&mut self, u: &Unary) -> T;
+    fn visit_variable(&mut self, v: &Variable) -> T;
 }
 

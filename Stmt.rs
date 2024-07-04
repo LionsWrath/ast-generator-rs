@@ -4,6 +4,7 @@ use crate::token::Token;
 pub enum Stmt {
     EXPRESSION(Expression),
     PRINT(Print),
+    VAR(Var),
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -28,6 +29,21 @@ impl Print {
    pub fn new(expr: Box<Expr>) -> Self {
         Print {
             expr,
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct Var {
+    pub name: Token,
+    pub initializer: Box<Expr>,
+}
+
+impl Var {
+   pub fn new(name: Token, initializer: Box<Expr>) -> Self {
+        Var {
+            name,
+            initializer,
         }
     }
 }

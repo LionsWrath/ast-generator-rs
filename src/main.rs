@@ -29,6 +29,7 @@ fn main () {
             "Grouping : Box<Expr> expr",
             "Literal  : BOOL bool, NUMBER f64, STRING String, NIL NIL",
             "Unary    : Token op, Box<Expr> rhs",
+            "Variable : Token name",
         ].iter().map(|v| v.to_string()).collect()
     );
 
@@ -37,6 +38,7 @@ fn main () {
         vec![
             "Expression : Box<Expr> expr",
             "Print      : Box<Expr> expr",
+            "Var        : Token name, Box<Expr> initializer",
         ].iter().map(|v| v.to_string()).collect()
     );
 

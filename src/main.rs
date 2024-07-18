@@ -25,6 +25,7 @@ fn main () {
         vec![
             "Comma    : Box<Expr> lhs, Box<Expr> rhs",
             "Ternary  : Box<Expr> cond, Box<Expr> then_expr, Box<Expr> else_expr",
+            "Assign   : Token name, Box<Expr> value",
             "Binary   : Box<Expr> lhs, Token op, Box<Expr> rhs",
             "Grouping : Box<Expr> expr",
             "Literal  : BOOL bool, NUMBER f64, STRING String, NIL NIL",

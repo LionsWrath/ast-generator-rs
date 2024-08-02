@@ -37,6 +37,7 @@ fn main () {
     base_names.push("Stmt".to_string());
     grammars.push(
         vec![
+            "Block      : Vec<Stmt> statements",
             "Expression : Box<Expr> expr",
             "Print      : Box<Expr> expr",
             "Var        : Token name, Box<Expr> initializer",
